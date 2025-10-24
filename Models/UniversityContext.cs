@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace UniversityScheduleApp.UniversityScheduleApp.Models
+namespace UniversityScheduleApp.Models
 {
     public class UniversityContext : DbContext
     {

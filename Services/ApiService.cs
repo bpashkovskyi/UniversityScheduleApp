@@ -1,7 +1,7 @@
 using System.Text.Json;
-using UniversityScheduleApp.UniversityScheduleApp.Models;
+using UniversityScheduleApp.Models;
 
-namespace UniversityScheduleApp.UniversityScheduleApp.Services
+namespace UniversityScheduleApp.Services
 {
     public class ApiService
     {
@@ -82,6 +82,92 @@ namespace UniversityScheduleApp.UniversityScheduleApp.Services
             }
 
             await _context.SaveChangesAsync();
+        }
+    }
+
+    public class RoomApiResponse
+    {
+        public PsRozkladExport psrozklad_export { get; set; }
+
+        public class PsRozkladExport
+        {
+            public List<Block> blocks { get; set; }
+
+            public class Block
+            {
+                public string name { get; set; }
+                public List<RoomObject> objects { get; set; }
+
+                public class RoomObject
+                {
+                    public string name { get; set; }
+                    public string ID { get; set; }
+                }
+            }
+        }
+    }
+
+    public class TeacherApiResponse
+    {
+        public PsRozkladExport psrozklad_export { get; set; }
+
+        public class PsRozkladExport
+        {
+            public List<Department> departments { get; set; }
+
+            public class Department
+            {
+                public string name { get; set; }
+                public List<TeacherObject> objects { get; set; }
+
+                public class TeacherObject
+                {
+                    public string name { get; set; }
+                    public string ID { get; set; }
+                }
+            }
+        }
+    }
+
+    public class GroupApiResponse
+    {
+        public PsRozkladExport psrozklad_export { get; set; }
+
+        public class PsRozkladExport
+        {
+            public List<Department> departments { get; set; }
+
+            public class Department
+            {
+                public string name { get; set; }
+                public List<GroupObject> objects { get; set; }
+
+                public class GroupObject
+                {
+                    public string name { get; set; }
+                    public string ID { get; set; }
+                }
+            }
+        }
+    }
+
+    public class ScheduleApiResponse
+    {
+        public PsRozkladExport psrozklad_export { get; set; }
+
+        public class PsRozkladExport
+        {
+            public List<ScheduleItem> roz_items { get; set; }
+
+            public class ScheduleItem
+            {
+                public string @object { get; set; }
+                public string date { get; set; }
+                public string lesson_number { get; set; }
+                public string lesson_name { get; set; }
+                public string lesson_time { get; set; }
+                public string lesson_description { get; set; }
+            }
         }
     }
 }

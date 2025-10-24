@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using UniversityScheduleApp.UniversityScheduleApp.Models;
+using UniversityScheduleApp.Models;
 
-namespace UniversityScheduleApp.UniversityScheduleApp.Controllers
+namespace UniversityScheduleApp.Controllers
 {
     public class ScheduleController : Controller
     {
