@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using UniversityScheduleApp.Models;
 using UniversityScheduleApp.Responses.GroupApiResponse;
 using UniversityScheduleApp.Responses.RoomApiResponse;
-using UniversityScheduleApp.Responses.ScheduleApiResponse;
 using UniversityScheduleApp.Responses.TeacherApiResponse;
 
 namespace UniversityScheduleApp.Services
@@ -121,26 +120,5 @@ namespace UniversityScheduleApp.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task FetchAndSaveSchedulesAsync(int groupId, string startDate, string endDate)
-        {
-            var url = $"https://dekanat.nung.edu.ua/cgi-bin/timetable_export.cgi?req_type=rozklad&req_mode=group&OBJ_ID={groupId}&begin_date={startDate}&end_date={endDate}&req_format=json&coding_mode=WINDOWS-1251&bs=ok";
-            var response = await _httpClient.GetStringAsync(url);
-            var data = JsonSerializer.Deserialize<ScheduleApiResponse>(response);
-
-            foreach (var item in data.PsRozkladExport.ScheduleItems)
-            {
-                _context.Schedules.Add(new Schedule
-                {
-                    Object = item.Object,
-                    Date = item.Date,
-                    LessonNumber = item.LessonNumber,
-                    LessonName = item.LessonName,
-                    LessonTime = item.LessonTime,
-                    LessonDescription = item.LessonDescription
-                });
-            }
-
-            await _context.SaveChangesAsync();
-        }
     }
 }

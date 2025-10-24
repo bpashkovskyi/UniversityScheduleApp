@@ -10,4 +10,4 @@ public sealed class Teacher
     
     // Navigation property
     public TeacherDepartment TeacherDepartment { get; set; } = null!;
-};
+}

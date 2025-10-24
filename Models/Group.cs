@@ -8,4 +8,4 @@ public sealed class Group
     public int GroupDepartmentId { get; set; }
     
     public GroupDepartment GroupDepartment { get; set; } = null!;
-};
+}

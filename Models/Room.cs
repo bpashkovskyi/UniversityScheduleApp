@@ -7,4 +7,4 @@ public sealed class Room
 
     public int BlockId { get; set; }
     public Block Block { get; set; } = null!;
-};
+}

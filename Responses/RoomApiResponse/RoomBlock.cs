@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace UniversityScheduleApp.Responses.RoomApiResponse;
 
-public sealed class Block
+public sealed class RoomBlock
 {
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;

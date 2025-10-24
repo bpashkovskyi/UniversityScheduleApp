@@ -14,7 +14,6 @@ namespace UniversityScheduleApp.Models
         public DbSet<Group> Groups { get; set; }
         public DbSet<TeacherDepartment> TeacherDepartments { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
-        public DbSet<Schedule> Schedules { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure Block-Room relationship
