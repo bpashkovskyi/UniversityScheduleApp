@@ -1,0 +1,21 @@
+@model IEnumerable<UniversityScheduleApp.Models.Room>
+
+<h1>Rooms</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Room ID</th>
+            <th>Room Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var room in Model)
+        {
+            <tr>
+                <td>@room.Id</td>
+                <td>@room.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>

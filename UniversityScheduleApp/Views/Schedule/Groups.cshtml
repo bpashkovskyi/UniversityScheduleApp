@@ -1,0 +1,21 @@
+@model IEnumerable<UniversityScheduleApp.Models.Group>
+
+<h1>Groups</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Group ID</th>
+            <th>Group Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var group in Model)
+        {
+            <tr>
+                <td>@group.Id</td>
+                <td>@group.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>
