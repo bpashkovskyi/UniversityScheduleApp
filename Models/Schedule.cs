@@ -9,4 +9,5 @@ public class Schedule
     public string LessonName { get; set; }
     public string LessonTime { get; set; }
     public string LessonDescription { get; set; }
+}; set; }
 }

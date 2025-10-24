@@ -1,10 +1,9 @@
 namespace UniversityScheduleApp.Models;
 
-public sealed class Room
+public sealed class TeacherDepartment
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
-
-    public int BlockId { get; set; }
-    public Block Block { get; set; } = null!;
-};
+    
+    public ICollection<Teacher> Teachers { get; set; } = new List<Teacher>();
+}

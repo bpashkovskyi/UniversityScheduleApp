@@ -1,9 +1,14 @@
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using UniversityScheduleApp.Models;
+using UniversityScheduleApp.Responses.GroupApiResponse;
+using UniversityScheduleApp.Responses.RoomApiResponse;
+using UniversityScheduleApp.Responses.ScheduleApiResponse;
+using UniversityScheduleApp.Responses.TeacherApiResponse;
 
 namespace UniversityScheduleApp.Services
 {
-    public class ApiService
+    public sealed class ApiService
     {
         private readonly HttpClient _httpClient;
         private readonly UniversityContext _context;
@@ -19,11 +24,29 @@ namespace UniversityScheduleApp.Services
             var response = await _httpClient.GetStringAsync("https://dekanat.nung.edu.ua/cgi-bin/timetable_export.cgi?req_type=obj_list&req_mode=room&show_ID=yes&req_format=json&coding_mode=WINDOWS-1251&bs=ok");
             var data = JsonSerializer.Deserialize<RoomApiResponse>(response);
 
-            foreach (var block in data.psrozklad_export.blocks)
+            foreach (var blockData in data.PsRozkladExport.Blocks)
             {
-                foreach (var room in block.objects)
+                // Create or find block
+                var block = await _context.Blocks
+                    .FirstOrDefaultAsync(b => b.Name == blockData.Name);
+                
+                if (block is null)
                 {
-                    _context.Rooms.Add(new Room { Id = int.Parse(room.ID), Name = room.name });
+                    block = new Block { Name = blockData.Name };
+                    _context.Blocks.Add(block);
+                    await _context.SaveChangesAsync(); // Save to get the ID
+                }
+
+                // Add rooms to the block
+                foreach (var roomData in blockData.Objects)
+                {
+                    var room = new Room 
+                    { 
+                        Id = int.Parse(roomData.Id), 
+                        Name = roomData.Name,
+                        BlockId = block.Id
+                    };
+                    _context.Rooms.Add(room);
                 }
             }
 
@@ -35,11 +58,29 @@ namespace UniversityScheduleApp.Services
             var response = await _httpClient.GetStringAsync("https://dekanat.nung.edu.ua/cgi-bin/timetable_export.cgi?req_type=obj_list&req_mode=teacher&show_ID=yes&req_format=json&coding_mode=WINDOWS-1251&bs=ok");
             var data = JsonSerializer.Deserialize<TeacherApiResponse>(response);
 
-            foreach (var department in data.psrozklad_export.departments)
+            foreach (var departmentData in data.PsRozkladExport.Departments)
             {
-                foreach (var teacher in department.objects)
+                // Create or find teacher department
+                var teacherDepartment = await _context.TeacherDepartments
+                    .FirstOrDefaultAsync(td => td.Name == departmentData.Name);
+                
+                if (teacherDepartment is null)
                 {
-                    _context.Teachers.Add(new Teacher { Id = int.Parse(teacher.ID), Name = teacher.name });
+                    teacherDepartment = new TeacherDepartment { Name = departmentData.Name };
+                    _context.TeacherDepartments.Add(teacherDepartment);
+                    await _context.SaveChangesAsync(); // Save to get the ID
+                }
+
+                // Add teachers to the department
+                foreach (var teacherData in departmentData.Objects)
+                {
+                    var teacher = new Teacher 
+                    { 
+                        Id = int.Parse(teacherData.Id), 
+                        Name = teacherData.Name,
+                        TeacherDepartmentId = teacherDepartment.Id
+                    };
+                    _context.Teachers.Add(teacher);
                 }
             }
 
@@ -51,11 +92,29 @@ namespace UniversityScheduleApp.Services
             var response = await _httpClient.GetStringAsync("https://dekanat.nung.edu.ua/cgi-bin/timetable_export.cgi?req_type=obj_list&req_mode=group&show_ID=yes&req_format=json&coding_mode=WINDOWS-1251&bs=ok");
             var data = JsonSerializer.Deserialize<GroupApiResponse>(response);
 
-            foreach (var department in data.psrozklad_export.departments)
+            foreach (var departmentData in data.PsRozkladExport.Departments)
             {
-                foreach (var group in department.objects)
+                // Create or find group department
+                var groupDepartment = await _context.GroupDepartments
+                    .FirstOrDefaultAsync(gd => gd.Name == departmentData.Name);
+                
+                if (groupDepartment is null)
                 {
-                    _context.Groups.Add(new Group { Id = int.Parse(group.ID), Name = group.name });
+                    groupDepartment = new GroupDepartment { Name = departmentData.Name };
+                    _context.GroupDepartments.Add(groupDepartment);
+                    await _context.SaveChangesAsync(); // Save to get the ID
+                }
+
+                // Add groups to the department
+                foreach (var groupData in departmentData.Objects)
+                {
+                    var group = new Group 
+                    { 
+                        Id = int.Parse(groupData.Id), 
+                        Name = groupData.Name,
+                        GroupDepartmentId = groupDepartment.Id
+                    };
+                    _context.Groups.Add(group);
                 }
             }
 
@@ -68,106 +127,20 @@ namespace UniversityScheduleApp.Services
             var response = await _httpClient.GetStringAsync(url);
             var data = JsonSerializer.Deserialize<ScheduleApiResponse>(response);
 
-            foreach (var item in data.psrozklad_export.roz_items)
+            foreach (var item in data.PsRozkladExport.ScheduleItems)
             {
                 _context.Schedules.Add(new Schedule
                 {
-                    Object = item.@object,
-                    Date = item.date,
-                    LessonNumber = item.lesson_number,
-                    LessonName = item.lesson_name,
-                    LessonTime = item.lesson_time,
-                    LessonDescription = item.lesson_description
+                    Object = item.Object,
+                    Date = item.Date,
+                    LessonNumber = item.LessonNumber,
+                    LessonName = item.LessonName,
+                    LessonTime = item.LessonTime,
+                    LessonDescription = item.LessonDescription
                 });
             }
 
             await _context.SaveChangesAsync();
-        }
-    }
-
-    public class RoomApiResponse
-    {
-        public PsRozkladExport psrozklad_export { get; set; }
-
-        public class PsRozkladExport
-        {
-            public List<Block> blocks { get; set; }
-
-            public class Block
-            {
-                public string name { get; set; }
-                public List<RoomObject> objects { get; set; }
-
-                public class RoomObject
-                {
-                    public string name { get; set; }
-                    public string ID { get; set; }
-                }
-            }
-        }
-    }
-
-    public class TeacherApiResponse
-    {
-        public PsRozkladExport psrozklad_export { get; set; }
-
-        public class PsRozkladExport
-        {
-            public List<Department> departments { get; set; }
-
-            public class Department
-            {
-                public string name { get; set; }
-                public List<TeacherObject> objects { get; set; }
-
-                public class TeacherObject
-                {
-                    public string name { get; set; }
-                    public string ID { get; set; }
-                }
-            }
-        }
-    }
-
-    public class GroupApiResponse
-    {
-        public PsRozkladExport psrozklad_export { get; set; }
-
-        public class PsRozkladExport
-        {
-            public List<Department> departments { get; set; }
-
-            public class Department
-            {
-                public string name { get; set; }
-                public List<GroupObject> objects { get; set; }
-
-                public class GroupObject
-                {
-                    public string name { get; set; }
-                    public string ID { get; set; }
-                }
-            }
-        }
-    }
-
-    public class ScheduleApiResponse
-    {
-        public PsRozkladExport psrozklad_export { get; set; }
-
-        public class PsRozkladExport
-        {
-            public List<ScheduleItem> roz_items { get; set; }
-
-            public class ScheduleItem
-            {
-                public string @object { get; set; }
-                public string date { get; set; }
-                public string lesson_number { get; set; }
-                public string lesson_name { get; set; }
-                public string lesson_time { get; set; }
-                public string lesson_description { get; set; }
-            }
         }
     }
 }
