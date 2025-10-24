@@ -56,6 +56,11 @@ class Program
             await apiService.FetchAndSaveGroupsAsync();
             SystemConsole.WriteLine("✓ Groups fetched and saved");
 
+            // Fetch and save lessons
+            SystemConsole.WriteLine("\nFetching lessons...");
+            await apiService.FetchAndSaveLessonsAsync();
+            SystemConsole.WriteLine("✓ Lessons fetched and saved");
+
             // Display summary
             SystemConsole.WriteLine("\n=== Summary ===");
             var roomCount = await context.Rooms.CountAsync();
@@ -64,6 +69,8 @@ class Program
             var blockCount = await context.Blocks.CountAsync();
             var groupDeptCount = await context.GroupDepartments.CountAsync();
             var teacherDeptCount = await context.TeacherDepartments.CountAsync();
+            var lessonCount = await context.Lessons.CountAsync();
+            var lessonGroupCount = await context.LessonGroups.CountAsync();
 
             SystemConsole.WriteLine($"Blocks: {blockCount}");
             SystemConsole.WriteLine($"Rooms: {roomCount}");
@@ -71,6 +78,8 @@ class Program
             SystemConsole.WriteLine($"Groups: {groupCount}");
             SystemConsole.WriteLine($"Teacher Departments: {teacherDeptCount}");
             SystemConsole.WriteLine($"Teachers: {teacherCount}");
+            SystemConsole.WriteLine($"Lessons: {lessonCount}");
+            SystemConsole.WriteLine($"Lesson-Group Assignments: {lessonGroupCount}");
 
             SystemConsole.WriteLine("\n✓ All data fetched successfully!");
         }
