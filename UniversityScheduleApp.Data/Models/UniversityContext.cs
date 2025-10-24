@@ -16,6 +16,21 @@ namespace UniversityScheduleApp.Data.Models
         public DbSet<Teacher> Teachers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Configure Room entity - disable identity for Id column
+            modelBuilder.Entity<Room>()
+                .Property(r => r.Id)
+                .ValueGeneratedNever();
+
+            // Configure Group entity - disable identity for Id column
+            modelBuilder.Entity<Group>()
+                .Property(g => g.Id)
+                .ValueGeneratedNever();
+
+            // Configure Teacher entity - disable identity for Id column
+            modelBuilder.Entity<Teacher>()
+                .Property(t => t.Id)
+                .ValueGeneratedNever();
+
             // Configure Block-Room relationship
             modelBuilder.Entity<Room>()
                 .HasOne(r => r.Block)
