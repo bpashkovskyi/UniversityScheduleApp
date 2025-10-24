@@ -1,11 +1,7 @@
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading.Tasks;
-using UniversityScheduleApp.Models;
-using System.Collections.Generic;
-using Microsoft.Extensions.DependencyInjection;
+using UniversityScheduleApp.UniversityScheduleApp.Models;
 
-namespace UniversityScheduleApp.Services
+namespace UniversityScheduleApp.UniversityScheduleApp.Services
 {
     public class ApiService
     {

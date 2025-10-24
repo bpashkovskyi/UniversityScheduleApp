@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
-namespace UniversityScheduleApp.Models
+namespace UniversityScheduleApp.UniversityScheduleApp.Models
 {
     public class UniversityContext : DbContext
     {
